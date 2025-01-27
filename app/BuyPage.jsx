@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Image,
-  TouchableOpacity,
-  Animated,
-  Easing,
-  Alert,
-} from 'react-native';
+import {View,Text,StyleSheet,FlatList,Image,TouchableOpacity,Animated,Easing,Alert,} from 'react-native';
 import { useCart } from './utils/CartContext';
 import { useNavigation } from 'expo-router';
 
