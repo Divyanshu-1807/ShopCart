@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import {View,Text,StyleSheet,FlatList,Image,TouchableOpacity,Animated,Easing,Alert,} from 'react-native';
+import {View,Text,StyleSheet,FlatList,Image,TouchableOpacity,Animated,Easing,Alert,Modal} from 'react-native';
 import { useCart } from './utils/CartContext';
 import { useNavigation } from 'expo-router';
+import LottieView from 'lottie-react-native';
 
 const BuyPage = () => {
-  const { cartItems } = useCart();
+  const { cartItems, proceedToPay, clearCart, addOrder } = useCart();
   const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [orderPlaced, setOrderPlaced] = useState(false);
   const [showWheel, setShowWheel] = useState(false);
   const [spinValue] = useState(new Animated.Value(0)); 
   const [spinning, setSpinning] = useState(false);
   const [showProceedButton, setShowProceedButton] = useState(false);
+  const [showAnimation, setShowAnimation] = useState(false);
   const navigation = useNavigation();
 
   const parsePrice = (price) => parseFloat(price.replace(/,/g, ''));
@@ -67,13 +70,27 @@ const BuyPage = () => {
   });
 
   const handleProceedToPay = () => {
-    Alert.alert('Success', 'Your order has been placed!');
+    // proceedToPay();
+    const newOrder = {
+      id: Date.now().toString(), 
+      items: cartItems,
+      totalAmount: calculateTotalPrice().toFixed(2),
+    };
+    addOrder(newOrder); 
+    clearCart(); 
+    setOrderPlaced(true);
+    // navigation.navigate('(tabs)', { screen: 'index' });
+    setShowAnimation(true); 
+    setTimeout(() => {
+      setShowAnimation(false); 
+      navigation.navigate('(tabs)', { screen: 'index' });
+    }, 1000); 
   };
 
   return (
     <View style={styles.container}>
 
-      {!showWheel && (
+      {!showWheel && !showAnimation &&(
         <>
           <Text style={styles.title}>Order Summary</Text>
           <FlatList
@@ -105,7 +122,7 @@ const BuyPage = () => {
         </>
       )}
 
-      {!showProceedButton && !showWheel && (
+      {!showProceedButton && !showWheel && !showAnimation &&(
         <TouchableOpacity
           style={styles.discountButton}
           onPress={() => setShowWheel(true)} 
@@ -153,14 +170,31 @@ const BuyPage = () => {
         </View>
       )}
 
-      {showProceedButton && !showWheel && (
+      {showProceedButton && !showWheel && !showAnimation && (
         <TouchableOpacity
           style={styles.proceedButton}
           onPress={handleProceedToPay} 
+          disabled={orderPlaced}
         >
-          <Text style={styles.proceedButtonText}>Proceed to Pay</Text>
+          <Text style={styles.proceedButtonText}>
+            {orderPlaced ? 'Order Placed' : 'Proceed to Pay'}
+          </Text>
         </TouchableOpacity>
+        
       )}
+
+      <Modal visible={showAnimation} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          <LottieView
+            source={require('./assetss/success-animation.json')} 
+            autoPlay
+            loop={false}
+            style={styles.animation}
+          />
+          <Text style={styles.successText}>Order Placed Successfully!</Text>
+        </View>
+      </Modal>
+
     </View>
   );
 };
@@ -247,6 +281,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   proceedButtonText: { color: 'white', fontWeight: 'bold', fontSize: 18, textAlign: 'center' },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+  },
+  animation: { width: 150, height: 150 },
+  successText: { marginTop: 20, fontSize: 18, fontWeight: 'bold', color: 'white' },
 });
 
 export default BuyPage;

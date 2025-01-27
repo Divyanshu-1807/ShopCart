@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, FlatList, Text, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 import Header from '../components/Header';
 import Banner from '../components/Banner';
 import Categories from '../components/Categories';
+import DealsForYou from '../components/DealsForYou';
+import PopularProducts from '../components/PopularProducts';
+import Delivery from '../components/Delivery'
 import { getAllProductsFromApi } from '../utils/helper';
-import {useNavigation} from 'expo-router';
+import { useNavigation } from 'expo-router';
 
 const Index = () => {
   const [products, setProducts] = useState([]);
@@ -25,60 +28,89 @@ const Index = () => {
     setFilteredProducts(filtered);
   }, [searchQuery, products]);
 
-  return (
-    <View style={styles.container}>
-      <Header onSearch={setSearchQuery} />
-      {searchQuery.length > 0 && (
-        <FlatList
-          style={styles.dropdown}
-          data={filteredProducts}
-          keyExtractor={(item) => item.sys.id}
-          renderItem={({ item }) => (
-            <View style={styles.productContainer}>
+  const renderSearchOverlay = () => {
+    if (searchQuery.length > 0) {
+      return (
+        <View style={styles.searchOverlay}>
+          <FlatList
+            data={filteredProducts}
+            keyExtractor={(item) => item.sys.id}
+            renderItem={({ item }) => (
               <TouchableOpacity 
-                onPress={() =>navigation.navigate('ProductPage', {productId: item.sys.id})
-              }>
+                style={styles.productContainer}
+                onPress={() => {
+                  navigation.navigate('ProductPage', { productId: item.sys.id });
+                  setSearchQuery(''); 
+                }}
+              >
                 <Text style={styles.productName}>{item.fields.productName}</Text>
               </TouchableOpacity>
-            </View>
-          )}
-        />
-      )}
-      <Banner />
-      <Categories />
-    </View>
+            )}
+          />
+        </View>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Header onSearch={setSearchQuery} />
+
+        {renderSearchOverlay()}
+        
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+          bounces={true}
+        >
+          <Delivery></Delivery>
+          <Banner />
+          <Categories />
+          <DealsForYou products={products} />
+          <PopularProducts products={products} />
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#ffffff',
+  safeArea: {
     flex: 1,
-  },
-  dropdown: {
-    position: 'absolute',
-    top: 55, 
-    zIndex: 1,
-    alignSelf: 'center',
-    width: '100%', 
     backgroundColor: '#ffffff',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  searchOverlay: {
+    position: 'absolute',
+    top: 55,
+    left: 0,
+    right: 0,
+    maxHeight: 300,
+    backgroundColor: '#ffffff',
+    zIndex: 999,
     borderRadius: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
     elevation: 5,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    maxHeight: 300,
-    borderColor: '#ddd',
-    borderWidth: 1,
   },
   productContainer: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: '#f0f0f0',
   },
   productName: {
     fontSize: 16,

@@ -15,7 +15,7 @@ const CartPage = () => {
       ) : (
         <>
           <FlatList
-            data={cartItems}
+            data={cartItems}                                                                
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.productItem}>

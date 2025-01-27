@@ -26,7 +26,7 @@ const ProductPage = () => {
       type: "success",
     });
 
-    navigation.navigate('CartPage')
+    // navigation.navigate('(tabs)', { screen: 'cart' });
   };
 
   if (!product) {

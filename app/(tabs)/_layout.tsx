@@ -13,19 +13,27 @@ const TabRoot = () => {
         }}
       />
       <Tabs.Screen
-        name="profile"
-        options={{
-          headerShown: false ,
-          title: 'Profile',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="user-circle-o" color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="cart"
         options={{
           headerShown: false ,
           title: 'Cart',
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="shopping-cart" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="order"
+        options={{
+          headerShown: false ,
+          title: 'My Order',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="shopping-bag" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          headerShown: false ,
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="user-circle-o" color={color} />,
         }}
       />
     </Tabs>

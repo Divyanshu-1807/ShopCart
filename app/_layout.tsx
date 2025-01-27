@@ -12,6 +12,7 @@ const Rootlayout = () => {
       <Stack.Screen name="ProductPage" options={{ headerShown: false }} />
       <Stack.Screen name="CartPage" options={{ headerShown: false }} />
       <Stack.Screen name="BuyPage" options={{ headerShown: false }} />
+      <Stack.Screen name="OrderPage" options={{ headerShown: false }} />
     </Stack>
     <FlashMessage position="top" />;
     </CartProvider>
