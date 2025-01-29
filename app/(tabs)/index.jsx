@@ -8,12 +8,14 @@ import PopularProducts from '../components/PopularProducts';
 import Delivery from '../components/Delivery'
 import { getAllProductsFromApi } from '../utils/helper';
 import { useNavigation } from 'expo-router';
+import { useUser } from '../utils/UserContext';
 
 const Index = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
+  const { userData } = useUser();
 
   useEffect(() => {
     getAllProductsFromApi(setProducts);
@@ -65,7 +67,11 @@ const Index = () => {
           contentContainerStyle={styles.scrollContent}
           bounces={true}
         >
-          <Delivery></Delivery>
+          <Delivery 
+            userName={userData.name}
+            userCity={userData.city}
+            userPincode={userData.pincode}
+          />
           <Banner />
           <Categories />
           <DealsForYou products={products} />

@@ -1,32 +1,48 @@
-import { View, Text, Image, StyleSheet, ScrollView,Button } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, Button, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useRoute } from '@react-navigation/native';
-import {fetchProductDetails,getRating} from './utils/helper'
+import { useLocalSearchParams } from 'expo-router';
+import { fetchProductDetails, getRating } from './utils/helper';
 import { useCart } from './utils/CartContext';
 import { showMessage } from 'react-native-flash-message';
 import { useNavigation } from 'expo-router';
+import { FontAwesome } from '@expo/vector-icons'; 
+import { useWishlist } from './utils/WishlistContext';
 
 const ProductPage = () => {
   const [product, setProduct] = useState(null);
-  const route = useRoute();
-  const { productId } = route.params; 
+  const params = useLocalSearchParams(); 
+  const productId = params.productId; 
   const { addToCart } = useCart();
-  const navigation=useNavigation();
+  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist(); 
+  const navigation = useNavigation();
 
   useEffect(() => {
-    fetchProductDetails(setProduct,productId);
-  }, []);
+    console.log('Fetching product for ID:', productId);
+    if (productId) {
+      fetchProductDetails(setProduct, productId);
+    }
+  }, [productId]);
+
+  const isProductInWishlist = wishlist.some((item) => item.id === product?.id);
+
+  const handleWishlistToggle = () => {
+    if (isProductInWishlist) {
+      removeFromWishlist(product.id); 
+      showMessage({ message: 'Removed from Wishlist', type: 'info' });
+    } else {
+      addToWishlist(product); 
+      showMessage({ message: 'Added to Wishlist', type: 'success' });
+    }
+  };
 
   const handleAddToCart = () => {
-    addToCart(product); 
-    
-    showMessage({
-      message: "Added to Cart",
-      description: "The product has been successfully added.",
-      type: "success",
-    });
+    addToCart(product);
 
-    // navigation.navigate('(tabs)', { screen: 'cart' });
+    showMessage({
+      message: 'Added to Cart',
+      description: 'The product has been successfully added.',
+      type: 'success',
+    });
   };
 
   if (!product) {
@@ -41,11 +57,20 @@ const ProductPage = () => {
     <ScrollView style={styles.container}>
       <Image source={{ uri: product.imageUrl }} style={styles.productImage} />
 
-      <Text style={styles.productName}>{product.productName}</Text>
+      <View style={styles.header}>
+        <Text style={styles.productName}>{product.productName}</Text>
+        <TouchableOpacity onPress={handleWishlistToggle}>
+          <FontAwesome
+            name={isProductInWishlist ? 'heart' : 'heart-o'}
+            size={23}
+            color={isProductInWishlist ? 'red' : 'grey'}
+          />
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.row}>
         <Text style={styles.rating}>Rating : {product.rating} </Text>
-        {getRating(product.rating)} 
+        {getRating(product.rating)}
         <Text style={styles.ratingCount}>({product.ratingCount} reviews)</Text>
       </View>
 
@@ -68,74 +93,19 @@ const ProductPage = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-    backgroundColor: '#ffffff',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  productImage: {
-    width: '100%',
-    height: 300,
-    resizeMode: 'contain',
-    marginBottom: 20,
-  },
-  productName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  rating: {
-    fontSize: 16,
-    color: '#017185',
-    marginRight: 5,
-  },
-  ratingCount: {
-    fontSize: 16,
-    color: '#555',
-    marginLeft: 5
-  },
-  productPrice: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#017185',
-    marginRight: 10,
-  },
-  mrp: {
-    fontSize: 16,
-    color: 'grey',
-  },
-  crossOutText: {
-    fontSize: 16,
-    color: 'grey',
-    textDecorationLine: 'line-through',
-  },
-  deliveryDate: {
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
-  },
-  productDescription: {
-    fontSize: 14,
-    lineHeight: 22,
-    color: '#555',
-    marginBottom:10
-  },
+  container: { padding: 10, backgroundColor: '#ffffff' },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  productImage: { width: '100%', height: 300, resizeMode: 'contain', marginBottom: 20 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
+  productName: { fontSize: 22, fontWeight: 'bold', color: '#333', flex: 1 },
+  row: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
+  rating: { fontSize: 16, color: '#017185', marginRight: 5 },
+  ratingCount: { fontSize: 16, color: '#555', marginLeft: 5 },
+  productPrice: { fontSize: 20, fontWeight: '600', color: '#017185', marginRight: 10 },
+  mrp: { fontSize: 16, color: 'grey' },
+  crossOutText: { fontSize: 16, color: 'grey', textDecorationLine: 'line-through' },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10, color: '#333' },
+  productDescription: { fontSize: 14, lineHeight: 22, color: '#555', marginBottom: 10 },
 });
 
 export default ProductPage;

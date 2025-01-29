@@ -36,7 +36,8 @@ const ProductScreen = () => {
           <TouchableOpacity
             key={index}
             onPress={() =>
-              navigation.navigate('ProductPage', {productId: item.sys.id})
+              {navigation.navigate('ProductPage', {productId: item.sys.id})
+              console.log(item.sys.id)}
             }
             style={styles.productSection}>
             <View style={styles.productImgSection}>

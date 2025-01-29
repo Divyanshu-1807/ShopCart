@@ -4,7 +4,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Feather from '@expo/vector-icons/Feather';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 
-const Delivery = () => {
+const Delivery = ({userName, userCity, userPincode}) => {
+
+  const firstName = userName?.split(' ')[0] || '';
+
   return (
     <LinearGradient
       start={{x: 0, y: 0}}
@@ -12,7 +15,7 @@ const Delivery = () => {
       colors={['#4c669f', '#3b5998', '#192f6a']}
       style={styles.container}>
       <Feather name="map-pin" size={16} color='#ffffff' />
-      <Text style={styles.deliver}>Deliver to Sarthak - Jaipur 302016</Text>
+      <Text style={styles.deliver}>Deliver to {firstName} - {userCity}, {userPincode}</Text>
       <SimpleLineIcons name="arrow-down" size={10} color='#ffffff'/>
     </LinearGradient>
   );

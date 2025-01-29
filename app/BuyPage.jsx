@@ -102,8 +102,10 @@ const BuyPage = () => {
                 <View style={styles.productDetails}>
                   <Text style={styles.productName}>{item.productName}</Text>
                   <Text style={styles.productInfo}>
-                    Price: ₹{item.price} | Quantity: {item.quantity} | Total: ₹
-                    {parsePrice(item.price) * parseInt(item.quantity, 10)}
+                    Price: ₹{item.price} | Quantity: {item.quantity} 
+                  </Text>
+                  <Text style={styles.productInfo}>
+                    Total: ₹{parsePrice(item.price) * parseInt(item.quantity, 10)}
                   </Text>
                 </View>
               </View>

@@ -13,10 +13,10 @@ import { getRating } from '../utils/helper';
 const PopularProducts = ({ products }) => {
   const navigation = useNavigation();
   const randomProducts = useMemo(() => {
-    // Create a copy of the products array to avoid mutating the original
+  
     const shuffled = [...products]
-      .sort(() => Math.random() - 0.5) // Shuffle the array
-      .slice(0, 7); // Take first 7 items
+      .sort(() => Math.random() - 0.5) 
+      .slice(0, 7); 
     return shuffled;
   }, [products]);
 
@@ -40,14 +40,14 @@ const PopularProducts = ({ products }) => {
             style={styles.productCard}
             onPress={() => navigation.navigate('ProductPage', { productId: product.sys.id })}
           >
-            {/* Product Image */}
+          
             <Image
               source={{ uri: product.fields.imageUrl }}
               style={styles.productImage}
               resizeMode="cover"
             />
 
-            {/* Product Details */}
+        
             <View style={styles.productInfo}>
               <Text 
                 numberOfLines={2} 
@@ -57,12 +57,12 @@ const PopularProducts = ({ products }) => {
                 {product.fields.productName}
               </Text>
               
-              {/* Category */}
+              
               <Text style={styles.category}>
                 {product.fields.category}
               </Text>
 
-              {/* Rating */}
+              
               <View style={styles.ratingContainer}>
                 {getRating(product.fields.rating)}
                 <Text style={styles.ratingText}>
@@ -70,7 +70,7 @@ const PopularProducts = ({ products }) => {
                 </Text>
               </View>
 
-              {/* Price */}
+  
               <View style={styles.priceContainer}>
               <Text 
                 numberOfLines={1}

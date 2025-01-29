@@ -11,7 +11,7 @@ const CartPage = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Your Cart</Text>
       {cartItems.length === 0 ? (
-        <Text style={styles.emptyCart}>Your cart is empty</Text>
+        <Text style={styles.emptyCart}>Cart is empty</Text>
       ) : (
         <>
           <FlatList
@@ -52,7 +52,7 @@ const CartPage = () => {
 const styles = StyleSheet.create({
   container: { flex: 1,padding: 20 },
   title: { fontSize: 22, fontWeight: 'bold', marginBottom: 20 },
-  emptyCart: { fontSize: 18, color: 'grey' },
+  emptyCart: { fontSize: 18, color: 'grey' , textAlign: 'center', justifyContent:'center' , marginTop: 50}, 
   productItem: { flexDirection: 'row', marginBottom: 15, borderBottomWidth: 1, paddingBottom: 10 },
   productImage: { width: 80, height: 80, marginRight: 10 },
   productDetails: { flex: 1 },
